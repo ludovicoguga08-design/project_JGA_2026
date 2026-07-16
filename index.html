@@ -3617,42 +3617,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-           PAGE: CALENDAR (PREMIUM)
-           ============================================================ -->
-        <div id="page-calendar" style="display:none;">
-            <h2 class="section-title"><span style="font-size:0.9rem;" aria-hidden="true">📅</span> Calendar</h2>
-            <div id="calendarPremiumLock" style="text-align:center; padding:28px; background:rgba(255,215,0,0.02); border-radius:16px; border:1px solid rgba(255,215,0,0.02);">
-                <div style="font-size:2.8rem; margin-bottom:6px;" aria-hidden="true">🔒</div>
-                <div style="font-weight:700; font-size:0.9rem; color:#FFD700;">Premium Feature</div>
-                <div style="font-size:0.6rem; color:rgba(232,224,212,0.35);">Upgrade to access calendar</div>
-                <button class="uni-btn" style="margin-top:12px; width:auto; padding:8px 24px; font-size:0.75rem;" onclick="navigateTo('subscription')">⬆️ Upgrade</button>
-            </div>
-            <div id="calendarContent" style="display:none;">
-                <div class="card premium-card">
-                    <div class="label">📅 Event Calendar</div>
-                    <div class="calendar-header">
-                        <button onclick="changeMonth(-1)" aria-label="Previous month">◀</button>
-                        <span class="month-year" id="calendarMonthYear">July 2026</span>
-                        <button onclick="changeMonth(1)" aria-label="Next month">▶</button>
-                    </div>
-                    <div class="calendar-grid" id="calendarGrid"></div>
-                </div>
-                <div class="card premium-card">
-                    <div class="label">📋 Upcoming Events</div>
-                    <div class="calendar-events" id="calendarEvents">
-                        <div class="no-events">No events scheduled</div>
-                    </div>
-                    <div style="display:flex; gap:8px; margin-top:8px;">
-                        <label for="eventTitle" class="sr-only">Event Title</label>
-                        <input type="text" id="eventTitle" placeholder="Event Title" style="flex:1; font-size:0.75rem; padding:8px 12px; border-radius:8px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4;" />
-                        <label for="eventRevenue" class="sr-only">Revenue</label>
-                        <input type="number" id="eventRevenue" placeholder="Revenue" style="width:100px; font-size:0.75rem; padding:8px 12px; border-radius:8px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4;" />
-                    </div>
-                    <button class="uni-btn" onclick="addEvent()" style="margin-top:6px; font-size:0.75rem; padding:8px;">➕ Add Event</button>
-                </div>
-            </div>
-        </div>
+      
 
         <!-- ============================================================
            PAGE: SUBSCRIPTION
