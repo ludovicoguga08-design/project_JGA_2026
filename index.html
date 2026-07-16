@@ -2949,9 +2949,66 @@
             border-color: #3B82F6;
         }
 
+        /* ============================================================
+           ANALYTICS GRID
+           ============================================================ */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .analytics-card {
+            background: rgba(10,14,26,0.25);
+            border-radius: 8px;
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid rgba(255,215,0,0.02);
+        }
+        .analytics-card .analytics-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        .analytics-card .analytics-label {
+            font-size: 0.45rem;
+            color: rgba(232,224,212,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+        body.light-mode .analytics-card {
+            background: rgba(0,0,0,0.04);
+        }
+        
+        .budget-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(10,14,26,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .budget-progress .budget-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #FFD700, #1E3A8A);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+            width: 0%;
+        }
+        body.light-mode .budget-progress {
+            background: rgba(0,0,0,0.08);
+        }
+
         @media (max-width: 480px) {
             .manual-input-section .input-row {
                 grid-template-columns: 1fr;
+            }
+            .analytics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .analytics-grid .analytics-card:last-child {
+                grid-column: 1 / -1;
             }
         }
     </style>
@@ -3187,17 +3244,13 @@
         <div id="page-dashboard" style="display:none;" role="main" aria-label="Dashboard main content">
             <h2 class="section-title"><span style="font-size:0.9rem;" aria-hidden="true">📊</span> <span id="dashboardTitle">Dashboard</span></h2>
 
-            <!-- ===== NEW: MANUAL INPUT SECTION - REAL DATA ===== -->
+            <!-- ===== MANUAL INPUT SECTION - REAL DATA ===== -->
             <div class="manual-input-section">
                 <div style="font-size:0.7rem; font-weight:600; margin-bottom:8px; color:#FFD700;">📝 Enter Your Real Business Data</div>
                 <div class="input-row">
                     <div>
                         <label for="manualSales">Total Sales (R)</label>
                         <input type="number" id="manualSales" placeholder="e.g. 5000" value="2450" />
-                    </div>
-                    <div>
-                        <label for="manualProfit">Profit (R)</label>
-                        <input type="number" id="manualProfit" placeholder="e.g. 2000" value="980" />
                     </div>
                     <div>
                         <label for="manualOrders">Total Orders</label>
@@ -3215,8 +3268,8 @@
                         <label for="manualAchieved">Achieved (R)</label>
                         <input type="number" id="manualAchieved" placeholder="e.g. 35000" value="28750" />
                     </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label for="manualExpenses">Total Expenses (R) - Optional</label>
+                    <div>
+                        <label for="manualExpenses">Total Expenses (R)</label>
                         <input type="number" id="manualExpenses" placeholder="e.g. 1500" value="1470" />
                     </div>
                 </div>
@@ -3296,7 +3349,7 @@
                 <div class="kpi-item uni-kpi"><div class="kpi-value" id="kpiSales">R 2,450.00</div><div class="kpi-label">Total Sales</div></div>
                 <div class="kpi-item uni-kpi"><div class="kpi-value" id="kpiProfit">R 980.00</div><div class="kpi-label">Profit</div></div>
                 <div class="kpi-item uni-kpi"><div class="kpi-value" id="kpiExpenses">R 1,470.00</div><div class="kpi-label">Expenses</div></div>
-                <div class="kpi-item uni-kpi"><div class="kpi-value" id="kpiAvgOrder">R 156.40</div><div class="kpi-label">Avg Order</div></div>
+                <div class="kpi-item uni-kpi"><div class="kpi-value" id="kpiAvgOrder">R 15.71</div><div class="kpi-label">Avg Order</div></div>
             </div>
 
             <div class="kpi-grid">
@@ -3306,7 +3359,7 @@
                 <div class="kpi-item uni-kpi"><div class="kpi-value" style="font-size:0.75rem;">✅ Active</div><div class="kpi-label">Status</div></div>
             </div>
 
-            <!-- ===== NEW: Advanced Analytics Section ===== -->
+            <!-- ===== Advanced Analytics Section ===== -->
             <div class="card premium-card">
                 <div class="label">📊 Advanced Analytics</div>
                 <div class="analytics-grid">
@@ -3328,7 +3381,7 @@
                     <div class="budget-progress">
                         <div class="budget-bar" id="budgetProgressBar" style="width:65%;"></div>
                     </div>
-                    <div style="font-size:0.4rem; color:rgba(232,224,212,0.2); margin-top:2px;">65% of monthly target achieved</div>
+                    <div style="font-size:0.4rem; color:rgba(232,224,212,0.2); margin-top:2px;" id="budgetProgressLabel">65% of monthly target achieved</div>
                 </div>
             </div>
 
@@ -3417,9 +3470,6 @@
                     <input type="number" id="itemQty" placeholder="Quantity" />
                     <label for="itemCategory" class="sr-only">Category</label>
                     <input type="text" id="itemCategory" placeholder="Category" value="General" />
-                    <!-- NEW: Product Image URL -->
-                    <label for="itemImage" class="sr-only">Image URL</label>
-                    <input type="text" id="itemImage" placeholder="Image URL (optional)" />
                 </div>
                 <button class="uni-btn" id="addStockBtn" onclick="addStockItem()" style="margin-top:8px;">Add Item</button>
             </div>
@@ -3440,40 +3490,6 @@
                         <tbody id="stockTableBody"></tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- ===== NEW: Supplier Management Section ===== -->
-            <div class="card" style="border:2px solid rgba(255,215,0,0.04);">
-                <div class="label" style="color:#FFD700;">🏢 Supplier Management</div>
-                <div class="input-grid" style="margin-bottom:8px;">
-                    <label for="supplierName" class="sr-only">Supplier Name</label>
-                    <input type="text" id="supplierName" placeholder="Supplier Name" />
-                    <label for="supplierContact" class="sr-only">Contact</label>
-                    <input type="text" id="supplierContact" placeholder="Contact Info" />
-                    <label for="supplierProduct" class="sr-only">Product</label>
-                    <input type="text" id="supplierProduct" placeholder="Product Supplied" />
-                    <label for="supplierLeadTime" class="sr-only">Lead Time</label>
-                    <input type="text" id="supplierLeadTime" placeholder="Lead Time (days)" />
-                </div>
-                <button class="btn-small uni-btn" onclick="addSupplier()" style="width:auto; padding:6px 20px; font-size:0.65rem;">➕ Add Supplier</button>
-                <div class="supplier-grid" id="supplierGrid" style="margin-top:8px;">
-                    <div style="font-size:0.55rem; color:rgba(232,224,212,0.3); text-align:center; padding:8px; grid-column:1/-1;">No suppliers added yet</div>
-                </div>
-            </div>
-
-            <!-- ===== NEW: Recipe/Menu Costing ===== -->
-            <div class="card" style="border:2px solid rgba(255,215,0,0.04);">
-                <div class="label" style="color:#FFD700;">📋 Recipe & Menu Costing</div>
-                <div class="input-grid">
-                    <label for="recipeName" class="sr-only">Recipe Name</label>
-                    <input type="text" id="recipeName" placeholder="Recipe Name" />
-                    <label for="recipeIngredients" class="sr-only">Ingredients</label>
-                    <input type="text" id="recipeIngredients" placeholder="Ingredients (comma separated)" />
-                    <label for="recipeYield" class="sr-only">Yield</label>
-                    <input type="number" id="recipeYield" placeholder="Yield (servings)" value="1" />
-                </div>
-                <button class="btn-small uni-btn" onclick="addRecipe()" style="width:auto; padding:6px 20px; font-size:0.65rem; margin-top:6px;">➕ Add Recipe</button>
-                <div id="recipeList" style="margin-top:8px;"></div>
             </div>
 
             <!-- ===== EXPIRATION DATE NOTIFICATIONS ===== -->
@@ -3500,14 +3516,6 @@
                     <input type="text" id="orderItems" placeholder="Items (comma separated)" />
                     <label for="orderTotal" class="sr-only">Total Amount</label>
                     <input type="number" id="orderTotal" placeholder="Total Amount" step="0.01" />
-                    <!-- NEW: Payment Method -->
-                    <label for="paymentMethod" class="sr-only">Payment Method</label>
-                    <select id="paymentMethod" style="padding:10px 12px; border-radius:8px; border:1px solid rgba(255,215,0,0.03); background:rgba(10,14,26,0.35); color:#e8e0d4; width:100%; font-size:0.8rem;">
-                        <option value="Cash">💰 Cash</option>
-                        <option value="Card">💳 Card</option>
-                        <option value="Mobile">📱 Mobile Payment</option>
-                        <option value="Credit">🏦 Credit</option>
-                    </select>
                 </div>
                 <button class="uni-btn" id="createOrderBtn" onclick="createOrder()" style="margin-top:8px;">📋 Create Order</button>
             </div>
@@ -3518,18 +3526,6 @@
                     <span style="font-size:0.5rem;color:rgba(232,224,212,0.25);" id="orderCount">0 orders</span>
                 </div>
                 <div id="orderList"></div>
-            </div>
-
-            <!-- ===== NEW: Sales Receipt Section ===== -->
-            <div class="card" style="border:2px solid rgba(255,215,0,0.04);">
-                <div class="label" style="color:#FFD700;">🧾 Sales Receipt</div>
-                <div style="font-size:0.5rem; color:rgba(232,224,212,0.3); margin-bottom:6px;">Generate receipt for completed orders</div>
-                <div style="display:flex; gap:6px; margin-bottom:6px;">
-                    <label for="receiptOrderId" class="sr-only">Order ID</label>
-                    <input type="text" id="receiptOrderId" placeholder="Order ID" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4; font-size:0.65rem;" />
-                    <button class="btn-small uni-btn" onclick="generateReceipt()" style="width:auto; padding:4px 16px; font-size:0.55rem;">📄 Generate</button>
-                </div>
-                <div id="receiptDisplay" class="receipt-box" style="display:none;"></div>
             </div>
         </div>
 
@@ -3558,20 +3554,6 @@
                     <input type="text" id="customerPhone" placeholder="Phone" />
                 </div>
                 <button class="uni-btn" id="addCustomerBtn" onclick="addCustomer()" style="margin-top:8px;">Add Customer</button>
-            </div>
-
-            <!-- ===== NEW: Customer Loyalty Program ===== -->
-            <div class="card" style="border:2px solid rgba(255,215,0,0.04);">
-                <div class="label" style="color:#FFD700;">⭐ Loyalty Program</div>
-                <div style="font-size:0.55rem; color:rgba(232,224,212,0.35);">Reward your best customers</div>
-                <div style="display:flex; gap:6px; margin-top:6px;">
-                    <label for="loyaltyCustomer" class="sr-only">Customer Name</label>
-                    <input type="text" id="loyaltyCustomer" placeholder="Customer Name" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4; font-size:0.65rem;" />
-                    <label for="loyaltyPoints" class="sr-only">Points</label>
-                    <input type="number" id="loyaltyPoints" placeholder="Points" style="width:80px; padding:6px 10px; border-radius:6px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4; font-size:0.65rem;" />
-                    <button class="btn-small uni-btn" onclick="addLoyaltyPoints()" style="width:auto; padding:4px 12px; font-size:0.55rem;">Award</button>
-                </div>
-                <div id="loyaltyCustomerList" style="margin-top:6px; font-size:0.55rem; color:rgba(232,224,212,0.3);"></div>
             </div>
         </div>
 
@@ -3608,16 +3590,44 @@
                 </div>
                 <button class="uni-btn" id="addStaffBtn" onclick="addStaff()" style="margin-top:8px;">Add Staff</button>
             </div>
-
-            <!-- ===== NEW: Time Tracking ===== -->
-            <div class="card" style="border:2px solid rgba(255,215,0,0.04);">
-                <div class="label" style="color:#FFD700;">⏱️ Staff Time Tracking</div>
-                <div style="font-size:0.55rem; color:rgba(232,224,212,0.35);">Track clock in/out times</div>
-                <div id="timeTrackingList" style="margin-top:6px; font-size:0.55rem; color:rgba(232,224,212,0.3);"></div>
-            </div>
         </div>
 
-      
+        <!-- ============================================================
+           PAGE: CALENDAR (PREMIUM)
+           ============================================================ -->
+        <div id="page-calendar" style="display:none;">
+            <h2 class="section-title"><span style="font-size:0.9rem;" aria-hidden="true">📅</span> Calendar</h2>
+            <div id="calendarPremiumLock" style="text-align:center; padding:28px; background:rgba(255,215,0,0.02); border-radius:16px; border:1px solid rgba(255,215,0,0.02);">
+                <div style="font-size:2.8rem; margin-bottom:6px;" aria-hidden="true">🔒</div>
+                <div style="font-weight:700; font-size:0.9rem; color:#FFD700;">Premium Feature</div>
+                <div style="font-size:0.6rem; color:rgba(232,224,212,0.35);">Upgrade to access calendar</div>
+                <button class="uni-btn" style="margin-top:12px; width:auto; padding:8px 24px; font-size:0.75rem;" onclick="navigateTo('subscription')">⬆️ Upgrade</button>
+            </div>
+            <div id="calendarContent" style="display:none;">
+                <div class="card premium-card">
+                    <div class="label">📅 Event Calendar</div>
+                    <div class="calendar-header">
+                        <button onclick="changeMonth(-1)" aria-label="Previous month">◀</button>
+                        <span class="month-year" id="calendarMonthYear">July 2026</span>
+                        <button onclick="changeMonth(1)" aria-label="Next month">▶</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+                <div class="card premium-card">
+                    <div class="label">📋 Upcoming Events</div>
+                    <div class="calendar-events" id="calendarEvents">
+                        <div class="no-events">No events scheduled</div>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <label for="eventTitle" class="sr-only">Event Title</label>
+                        <input type="text" id="eventTitle" placeholder="Event Title" style="flex:1; font-size:0.75rem; padding:8px 12px; border-radius:8px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4;" />
+                        <label for="eventRevenue" class="sr-only">Revenue</label>
+                        <input type="number" id="eventRevenue" placeholder="Revenue" style="width:100px; font-size:0.75rem; padding:8px 12px; border-radius:8px; border:1px solid rgba(255,215,0,0.02); background:rgba(10,14,26,0.35); color:#e8e0d4;" />
+                    </div>
+                    <button class="uni-btn" onclick="addEvent()" style="margin-top:6px; font-size:0.75rem; padding:8px;">➕ Add Event</button>
+                </div>
+            </div>
+        </div>
 
         <!-- ============================================================
            PAGE: SUBSCRIPTION
@@ -3782,6 +3792,7 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // ============================================================
         // APP STATE
@@ -3818,16 +3829,6 @@
         let isDarkMode = true;
         let users = {};
         
-        // ============================================================
-        // NEW: ENHANCED DATA STRUCTURES
-        // ============================================================
-        let suppliers = [];
-        let recipes = [];
-        let salesHistoryEnhanced = [];
-        let loyaltyCustomers = [];
-        let timeTracking = [];
-        let receipts = [];
-
         // ============================================================
         // ACCESSIBILITY SETTINGS
         // ============================================================
@@ -3903,21 +3904,25 @@
         // ============================================================
         let businessData = {
             sales: 2450,
-            profit: 980,
+            profit: 0,
             expenses: { rent: 300, electricity: 120, wages: 450, marketing: 200, transport: 150, supplies: 180 },
             totalOrders: 156,
             customers: 45,
             staffCount: 6,
             monthlyTarget: 50000,
             monthlyAchieved: 28750,
-            avgOrder: 156.40,
+            avgOrder: 0,
             stock: [
-                { id: 'item1', name: 'Coffee Beans', emoji: '☕', category: 'Beverages', cost: 10.00, price: 20.00, qty: 45, status: 'Good', expiry: '2026-12-31', image: '' },
-                { id: 'item2', name: 'Milk', emoji: '🥛', category: 'Beverages', cost: 8.00, price: 15.00, qty: 32, status: 'Good', expiry: '2026-08-15', image: '' },
-                { id: 'item3', name: 'Sugar', emoji: '🍬', category: 'Beverages', cost: 5.00, price: 10.00, qty: 12, status: 'Bad', expiry: '2026-09-01', image: '' },
-                { id: 'item4', name: 'Chicken', emoji: '🍗', category: 'Food', cost: 25.00, price: 45.00, qty: 6, status: 'Critical', expiry: '2026-07-20', image: '' }
+                { id: 'item1', name: 'Coffee Beans', emoji: '☕', category: 'Beverages', cost: 10.00, price: 20.00, qty: 45, status: 'Good', expiry: '2026-12-31' },
+                { id: 'item2', name: 'Milk', emoji: '🥛', category: 'Beverages', cost: 8.00, price: 15.00, qty: 32, status: 'Good', expiry: '2026-08-15' },
+                { id: 'item3', name: 'Sugar', emoji: '🍬', category: 'Beverages', cost: 5.00, price: 10.00, qty: 12, status: 'Bad', expiry: '2026-09-01' },
+                { id: 'item4', name: 'Chicken', emoji: '🍗', category: 'Food', cost: 25.00, price: 45.00, qty: 6, status: 'Critical', expiry: '2026-07-20' }
             ],
-            orders: [],
+            orders: [
+                { id: 'ORD001', customer: 'Wanga Seloga', items: 'Coffee, Sandwich', total: 85.00, status: 'pending', paymentMethod: 'Cash', createdAt: new Date().toISOString() },
+                { id: 'ORD002', customer: 'David Swelindawo', items: 'Milk, Sugar', total: 45.00, status: 'pending', paymentMethod: 'Card', createdAt: new Date().toISOString() },
+                { id: 'ORD003', customer: 'Karabo Sebeela', items: 'Chicken Meal', total: 120.00, status: 'pending', paymentMethod: 'Mobile', createdAt: new Date().toISOString() }
+            ],
             customersList: [
                 { id: 'C001', name: 'Wanga Seloga', email: 'wanga@email.com', phone: '+27 82 123 4567' },
                 { id: 'C002', name: 'David Swelindawo', email: 'david@email.com', phone: '+27 83 234 5678' },
@@ -3941,7 +3946,6 @@
                 const d = new Date(now);
                 d.setMinutes(d.getMinutes() - i);
                 businessData.timeLabels.push(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-                // Initialize with zeros - will be replaced by manual data
                 businessData.salesHistory.push(0);
                 businessData.profitHistory.push(0);
                 businessData.expenseHistory.push(0);
@@ -4206,10 +4210,10 @@
             });
             if (page === 'dashboard') { updateDashboard(); updateCharts(); loadInvoices(); loadTasks(); loadMessages();
                 speakText('Dashboard'); }
-            if (page === 'stock') { updateStock(); renderExpirationAlerts(); renderSuppliers(); renderRecipes(); speakText('Stock Management'); }
+            if (page === 'stock') { updateStock(); renderExpirationAlerts(); speakText('Stock Management'); }
             if (page === 'orders') { updateOrders(); speakText('Orders'); }
-            if (page === 'customers') { updateCustomers(); renderLoyaltyCustomers(); speakText('Customers'); }
-            if (page === 'staff') { updateStaff(); renderTimeTracking(); speakText('Staff'); }
+            if (page === 'customers') { updateCustomers(); speakText('Customers'); }
+            if (page === 'staff') { updateStaff(); speakText('Staff'); }
             if (page === 'calendar') {
                 if (isPremium) {
                     document.getElementById('calendarPremiumLock').style.display = 'none';
@@ -4558,9 +4562,37 @@
         }
 
         // ============================================================
-        // DASHBOARD UPDATE
+        // CALCULATION FUNCTIONS - FIXED
+        // ============================================================
+        function calculateProfit() {
+            const totalExpenses = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
+            return Math.max(0, businessData.sales - totalExpenses);
+        }
+
+        function calculateAvgOrder() {
+            if (businessData.totalOrders === 0) return 0;
+            return businessData.sales / businessData.totalOrders;
+        }
+
+        function calculateProfitMargin() {
+            if (businessData.sales === 0) return 0;
+            return (businessData.profit / businessData.sales) * 100;
+        }
+
+        function calculateStockTurnover() {
+            const totalStockValue = businessData.stock.reduce((sum, item) => sum + (item.cost * item.qty), 0);
+            if (totalStockValue === 0) return 0;
+            return businessData.sales / totalStockValue;
+        }
+
+        // ============================================================
+        // DASHBOARD UPDATE - FIXED
         // ============================================================
         function updateDashboard() {
+            // Calculate values based on user inputs
+            businessData.profit = calculateProfit();
+            businessData.avgOrder = calculateAvgOrder();
+            
             document.getElementById('kpiSales').textContent = 'R ' + businessData.sales.toFixed(2);
             document.getElementById('kpiProfit').textContent = 'R ' + businessData.profit.toFixed(2);
             let totalExp = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
@@ -4568,59 +4600,54 @@
             document.getElementById('kpiAvgOrder').textContent = 'R ' + businessData.avgOrder.toFixed(2);
             document.getElementById('kpiOrders').textContent = businessData.totalOrders;
             document.getElementById('kpiStockItems').textContent = businessData.stock.length;
-            const pct = (businessData.monthlyAchieved / businessData.monthlyTarget) * 100;
             document.getElementById('lastUpdate').textContent = '🔄 ' + new Date().toLocaleTimeString();
             document.getElementById('statRevenue').textContent = 'R' + businessData.sales.toFixed(0);
             document.getElementById('statOrders').textContent = businessData.totalOrders;
             updateBusinessInfo();
             updateLoyaltyDisplay();
 
-            // NEW: Update Advanced Analytics
+            // Update Advanced Analytics
             updateAdvancedAnalytics();
         }
 
         // ============================================================
-        // NEW: ADVANCED ANALYTICS
+        // ADVANCED ANALYTICS - FIXED
         // ============================================================
         function updateAdvancedAnalytics() {
-            const totalExp = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
-            const profitMargin = businessData.sales > 0 ? ((businessData.profit / businessData.sales) * 100) : 0;
+            const profitMargin = calculateProfitMargin();
             const avgDaily = businessData.sales / 30;
-            const stockTurnover = businessData.stock.length > 0 ? 
-                (businessData.sales / businessData.stock.reduce((sum, i) => sum + i.cost * i.qty, 0)) : 0;
+            const stockTurnover = calculateStockTurnover();
 
             document.getElementById('analyticsProfitMargin').textContent = profitMargin.toFixed(1) + '%';
             document.getElementById('analyticsAvgDaily').textContent = 'R' + avgDaily.toFixed(0);
             document.getElementById('analyticsStockTurnover').textContent = stockTurnover.toFixed(1) + 'x';
 
-            const progress = (businessData.monthlyAchieved / businessData.monthlyTarget) * 100;
-            document.getElementById('budgetProgressBar').style.width = Math.min(progress, 100) + '%';
+            const progress = businessData.monthlyTarget > 0 ? 
+                Math.min((businessData.monthlyAchieved / businessData.monthlyTarget) * 100, 100) : 0;
+            document.getElementById('budgetProgressBar').style.width = progress + '%';
+            document.getElementById('budgetProgressLabel').textContent = progress.toFixed(0) + '% of monthly target achieved';
         }
 
         // ============================================================
-        // MANUAL INPUT UPDATE FUNCTION - REAL DATA
+        // MANUAL INPUT UPDATE - FIXED CALCULATIONS
         // ============================================================
         function updateFromManualInput() {
             const sales = parseFloat(document.getElementById('manualSales').value) || 0;
-            const profit = parseFloat(document.getElementById('manualProfit').value) || 0;
             const orders = parseInt(document.getElementById('manualOrders').value) || 0;
             const customers = parseInt(document.getElementById('manualCustomers').value) || 0;
             const target = parseFloat(document.getElementById('manualTarget').value) || 50000;
             const achieved = parseFloat(document.getElementById('manualAchieved').value) || 0;
             const manualExpenses = parseFloat(document.getElementById('manualExpenses').value) || 0;
 
-            // Update business data with REAL manual inputs
+            // Update business data with manual inputs
             businessData.sales = sales;
-            businessData.profit = profit;
             businessData.totalOrders = orders;
             businessData.customers = customers;
             businessData.monthlyTarget = target;
             businessData.monthlyAchieved = achieved;
-            businessData.avgOrder = orders > 0 ? sales / orders : 0;
 
-            // If expenses were manually entered, use them
+            // Update expenses if provided
             if (manualExpenses > 0) {
-                // Distribute expenses proportionally to existing expense categories
                 const currentTotal = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
                 if (currentTotal > 0) {
                     const ratio = manualExpenses / currentTotal;
@@ -4628,7 +4655,6 @@
                         businessData.expenses[key] = Math.round(businessData.expenses[key] * ratio);
                     });
                 } else {
-                    // If no expenses, distribute equally
                     const perCategory = manualExpenses / 6;
                     Object.keys(businessData.expenses).forEach(key => {
                         businessData.expenses[key] = Math.round(perCategory);
@@ -4636,7 +4662,11 @@
                 }
             }
 
-            // Update the expense input fields to reflect changes
+            // Recalculate profit and avg order
+            businessData.profit = calculateProfit();
+            businessData.avgOrder = calculateAvgOrder();
+
+            // Update expense input fields
             document.getElementById('expRent').value = businessData.expenses.rent || 0;
             document.getElementById('expElec').value = businessData.expenses.electricity || 0;
             document.getElementById('expWages').value = businessData.expenses.wages || 0;
@@ -4644,10 +4674,8 @@
             document.getElementById('expTransport').value = businessData.expenses.transport || 0;
             document.getElementById('expSupplies').value = businessData.expenses.supplies || 0;
 
-            // Update the customers list count (just for display)
-            // Keep the actual customer list separate, just update the count display
+            // Update customers list
             if (customers > businessData.customersList.length) {
-                // Add placeholder customers if needed
                 for (let i = businessData.customersList.length; i < customers; i++) {
                     businessData.customersList.push({ 
                         id: 'C' + Date.now().toString().slice(-4) + i, 
@@ -4657,17 +4685,29 @@
                     });
                 }
             } else if (customers < businessData.customersList.length) {
-                // Truncate customer list
                 businessData.customersList = businessData.customersList.slice(0, customers);
             }
 
-            // Update dashboard
+            // Update order count
+            if (orders > businessData.orders.length) {
+                for (let i = businessData.orders.length; i < orders; i++) {
+                    businessData.orders.push({
+                        id: 'ORD' + Date.now().toString().slice(-6) + i,
+                        customer: 'Customer ' + (i + 1),
+                        items: 'Item ' + (i + 1),
+                        total: sales / Math.max(orders, 1),
+                        status: 'pending',
+                        paymentMethod: 'Cash',
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } else if (orders < businessData.orders.length) {
+                businessData.orders = businessData.orders.slice(0, orders);
+            }
+
+            // Update dashboard and charts
             updateDashboard();
-            
-            // Update charts with new data - REFLECTS YOUR REAL INPUTS
             updateCharts();
-            
-            // Update all sections
             updateStock();
             updateOrders();
             updateCustomers();
@@ -4678,90 +4718,114 @@
         }
 
         // ============================================================
-        // REAL-TIME UPDATES - NOW USING MANUAL DATA
+        // START LIVE UPDATES
         // ============================================================
         function startLiveUpdates() {
             if (liveInterval) clearInterval(liveInterval);
-            // Just update once on load - user controls all data
             setTimeout(() => {
-                // Use the default values from the input fields
                 updateFromManualInput();
             }, 500);
         }
 
         // ============================================================
-        // CHARTS - NOW REFLECTING REAL MANUAL INPUT DATA
+        // CHARTS - FIXED WITH PROPER CHART.JS INTEGRATION
         // ============================================================
         function updateCharts() {
-            if (typeof Chart === 'undefined') { setTimeout(updateCharts, 500); return; }
+            // Wait for Chart.js to be available
+            if (typeof Chart === 'undefined') { 
+                console.warn('Chart.js not loaded, retrying...');
+                setTimeout(updateCharts, 500); 
+                return; 
+            }
+
             const canvas1 = document.getElementById('salesChart');
             const canvas2 = document.getElementById('expenseChart');
-            if (!canvas1 || !canvas2) return;
+            if (!canvas1 || !canvas2) {
+                console.warn('Chart canvases not found');
+                return;
+            }
 
-            // Use current business data from manual inputs
+            // Get current data from businessData
             const currentSales = businessData.sales || 0;
             const currentProfit = businessData.profit || 0;
             const currentExpenses = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
             
             // Generate data points based on REAL input values
-            // Create a 30-day history where the last point is the current value
             let salesData = [];
             let profitData = [];
             let expenseData = [];
             let labels = [];
             
             const today = new Date();
-            const baseSales = currentSales / 30;
-            const baseProfit = currentProfit / 30;
-            const baseExpense = currentExpenses / 30;
             
             for (let i = 29; i >= 0; i--) {
                 const d = new Date(today);
                 d.setDate(d.getDate() - i);
                 labels.push(d.toLocaleDateString('en', { month: 'short', day: 'numeric' }));
                 
-                // Create a realistic trend that leads to the current value
                 const progress = (29 - i) / 29; // 0 to 1
-                const variation = 0.85 + (0.3 * Math.random());
                 
-                // Sales: start at 60% of current, grow to current value
-                const salesTarget = currentSales * (0.6 + (0.4 * progress));
-                salesData.push(salesTarget * variation);
+                // Create realistic trend based on current values
+                // Start at 40% of current value, grow to current value
+                const salesValue = currentSales * (0.4 + (0.6 * progress));
+                salesData.push(salesValue);
                 
-                // Profit: follow sales with some variation
-                const profitTarget = currentProfit * (0.5 + (0.5 * progress));
-                profitData.push(profitTarget * variation * 0.9);
+                const profitValue = currentProfit * (0.3 + (0.7 * progress));
+                profitData.push(profitValue);
                 
-                // Expenses: relatively stable with slight upward trend
-                const expenseTarget = currentExpenses * (0.7 + (0.3 * progress));
-                expenseData.push(expenseTarget * (0.9 + (0.2 * Math.random())));
+                const expenseValue = currentExpenses * (0.5 + (0.5 * progress));
+                expenseData.push(expenseValue);
             }
 
             const textColor = isDarkMode ? '#e8e0d4' : '#1a2332';
             const gridColor = isDarkMode ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)';
 
-            if (chart) { chart.destroy();
-                chart = null; }
+            // Destroy existing charts
+            if (chart) { 
+                chart.destroy();
+                chart = null; 
+            }
+            if (expenseChart) { 
+                expenseChart.destroy();
+                expenseChart = null; 
+            }
+
             try {
                 const ctx1 = canvas1.getContext('2d');
                 if (!ctx1) return;
+
+                // Determine chart type and configuration
                 let chartConfig = {
                     type: chartType || 'line',
                     data: {
                         labels: labels,
                         datasets: [
-                            { label: 'Sales (Your Input)', data: salesData, borderColor: '#FFD700',
-                                backgroundColor: isDarkMode ? 'rgba(255,215,0,0.08)' :
-                                'rgba(255,215,0,0.10)',
-                                fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#FFD700',
-                                pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7', pointBorderWidth: 1,
-                                borderWidth: 2 },
-                            { label: 'Profit (Your Input)', data: profitData, borderColor: '#34C759',
-                                backgroundColor: isDarkMode ? 'rgba(52,199,89,0.06)' :
-                                'rgba(52,199,89,0.08)',
-                                fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#34C759',
-                                pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7', pointBorderWidth: 1,
-                                borderWidth: 2 }
+                            {
+                                label: 'Sales',
+                                data: salesData,
+                                borderColor: '#FFD700',
+                                backgroundColor: isDarkMode ? 'rgba(255,215,0,0.08)' : 'rgba(255,215,0,0.10)',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 3,
+                                pointBackgroundColor: '#FFD700',
+                                pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7',
+                                pointBorderWidth: 1,
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Profit',
+                                data: profitData,
+                                borderColor: '#34C759',
+                                backgroundColor: isDarkMode ? 'rgba(52,199,89,0.06)' : 'rgba(52,199,89,0.08)',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 3,
+                                pointBackgroundColor: '#34C759',
+                                pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7',
+                                pointBorderWidth: 1,
+                                borderWidth: 2
+                            }
                         ]
                     },
                     options: {
@@ -4769,99 +4833,176 @@
                         maintainAspectRatio: false,
                         animation: { duration: 800, easing: 'easeOutQuart' },
                         plugins: {
-                            legend: { labels: { color: textColor, font: { size: 9, weight: '600' },
-                                    padding: 8, usePointStyle: true, pointStyle: 'circle' } },
-                            tooltip: { backgroundColor: isDarkMode ? 'rgba(10,14,26,0.9)' :
-                                    'rgba(255,255,255,0.9)',
-                                titleColor: textColor, bodyColor: textColor,
-                                borderColor: 'rgba(255,215,0,0.06)', borderWidth: 1, padding: 8,
-                                cornerRadius: 6 }
+                            legend: {
+                                labels: {
+                                    color: textColor,
+                                    font: { size: 9, weight: '600' },
+                                    padding: 8,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: isDarkMode ? 'rgba(10,14,26,0.9)' : 'rgba(255,255,255,0.9)',
+                                titleColor: textColor,
+                                bodyColor: textColor,
+                                borderColor: 'rgba(255,215,0,0.06)',
+                                borderWidth: 1,
+                                padding: 8,
+                                cornerRadius: 6
+                            }
                         },
-                        scales: (chartType === 'pie' || chartType === 'doughnut') ? undefined : {
-                            x: { ticks: { color: textColor, font: { size: 7 } }, grid: { color: gridColor } },
-                            y: { ticks: { color: textColor, font: { size: 7 } }, grid: { color: gridColor } }
+                        scales: {
+                            x: {
+                                ticks: { color: textColor, font: { size: 7 } },
+                                grid: { color: gridColor }
+                            },
+                            y: {
+                                ticks: { color: textColor, font: { size: 7 } },
+                                grid: { color: gridColor }
+                            }
                         }
                     }
                 };
 
+                // Handle pie and doughnut charts
                 if (chartType === 'pie' || chartType === 'doughnut') {
                     const last7 = salesData.slice(-7);
                     const lastLabels = labels.slice(-7);
+                    const colors = ['#FFD700', '#1E3A8A', '#F0A500', '#34C759', '#FF6B00', '#3B82F6', '#FF3B30'];
+                    
                     chartConfig.data = {
                         labels: lastLabels,
-                        datasets: [{ label: 'Sales (Last 7)', data: last7,
-                            backgroundColor: ['#FFD700', '#1E3A8A', '#F0A500', '#34C759', '#FF6B00', '#3B82F6',
-                                '#FF3B30'
-                            ], borderColor: isDarkMode ? '#0a0e1a' : '#eef2f7', borderWidth: 2 }]
+                        datasets: [{
+                            label: 'Sales (Last 7)',
+                            data: last7,
+                            backgroundColor: colors,
+                            borderColor: isDarkMode ? '#0a0e1a' : '#eef2f7',
+                            borderWidth: 2
+                        }]
                     };
                     chartConfig.options.plugins = {
-                        legend: { labels: { color: textColor, font: { size: 8 }, usePointStyle: true,
-                                pointStyle: 'circle' } }
+                        legend: {
+                            labels: {
+                                color: textColor,
+                                font: { size: 8 },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        }
                     };
-                    if (chartType === 'doughnut') { chartConfig.options.cutout = '50%'; }
+                    if (chartType === 'doughnut') {
+                        chartConfig.options.cutout = '50%';
+                    }
                     delete chartConfig.options.scales;
                 }
 
+                // Handle radar charts
                 if (chartType === 'radar') {
                     const last7 = salesData.slice(-7);
                     chartConfig.data = {
                         labels: labels.slice(-7),
-                        datasets: [{ label: 'Sales', data: last7, borderColor: '#FFD700',
-                            backgroundColor: isDarkMode ? 'rgba(255,215,0,0.08)' :
-                            'rgba(255,215,0,0.10)',
-                            fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#FFD700',
-                            pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7', pointBorderWidth: 2 }]
+                        datasets: [{
+                            label: 'Sales',
+                            data: last7,
+                            borderColor: '#FFD700',
+                            backgroundColor: isDarkMode ? 'rgba(255,215,0,0.08)' : 'rgba(255,215,0,0.10)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#FFD700',
+                            pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7',
+                            pointBorderWidth: 2
+                        }]
                     };
                     chartConfig.options.scales = {
-                        r: { ticks: { color: textColor, backdropColor: 'transparent', font: { size: 7 } },
+                        r: {
+                            ticks: {
+                                color: textColor,
+                                backdropColor: 'transparent',
+                                font: { size: 7 }
+                            },
                             grid: { color: gridColor },
-                            angleLines: { color: isDarkMode ? 'rgba(255,255,255,0.04)' :
-                                'rgba(0,0,0,0.04)' },
-                            pointLabels: { color: textColor, font: { size: 8 } } }
+                            angleLines: { color: isDarkMode ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)' },
+                            pointLabels: { color: textColor, font: { size: 8 } }
+                        }
                     };
                 }
-                chart = new Chart(ctx1, chartConfig);
-            } catch (error) { console.error('Sales chart error:', error); }
 
-            if (expenseChart) { expenseChart.destroy();
-                expenseChart = null; }
-            try {
+                // Create the chart
+                chart = new Chart(ctx1, chartConfig);
+                console.log('✅ Sales chart updated successfully');
+
+                // --- Expense Chart ---
                 const ctx2 = canvas2.getContext('2d');
                 if (!ctx2) return;
+
                 const expenseConfig = {
                     type: 'line',
                     data: {
                         labels: labels,
-                        datasets: [{ label: 'Expenses (Your Input)', data: expenseData, borderColor: '#FF6B00',
-                            backgroundColor: isDarkMode ? 'rgba(255,107,0,0.04)' :
-                            'rgba(255,107,0,0.06)',
-                            fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#FF6B00',
-                            pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7', pointBorderWidth: 1,
-                            borderWidth: 2 }]
+                        datasets: [{
+                            label: 'Expenses',
+                            data: expenseData,
+                            borderColor: '#FF6B00',
+                            backgroundColor: isDarkMode ? 'rgba(255,107,0,0.04)' : 'rgba(255,107,0,0.06)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#FF6B00',
+                            pointBorderColor: isDarkMode ? '#0a0e1a' : '#eef2f7',
+                            pointBorderWidth: 1,
+                            borderWidth: 2
+                        }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         animation: { duration: 800, easing: 'easeOutQuart' },
                         plugins: {
-                            legend: { labels: { color: textColor, font: { size: 9, weight: '600' },
-                                    padding: 8, usePointStyle: true, pointStyle: 'circle' } },
-                            tooltip: { backgroundColor: isDarkMode ? 'rgba(10,14,26,0.9)' :
-                                    'rgba(255,255,255,0.9)',
-                                titleColor: textColor, bodyColor: textColor,
-                                borderColor: 'rgba(255,107,0,0.06)', borderWidth: 1, padding: 8,
-                                cornerRadius: 6 }
+                            legend: {
+                                labels: {
+                                    color: textColor,
+                                    font: { size: 9, weight: '600' },
+                                    padding: 8,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: isDarkMode ? 'rgba(10,14,26,0.9)' : 'rgba(255,255,255,0.9)',
+                                titleColor: textColor,
+                                bodyColor: textColor,
+                                borderColor: 'rgba(255,107,0,0.06)',
+                                borderWidth: 1,
+                                padding: 8,
+                                cornerRadius: 6
+                            }
                         },
                         scales: {
-                            x: { ticks: { color: textColor, font: { size: 7 } }, grid: { color: gridColor } },
-                            y: { ticks: { color: textColor, font: { size: 7 } }, grid: { color: gridColor } }
+                            x: {
+                                ticks: { color: textColor, font: { size: 7 } },
+                                grid: { color: gridColor }
+                            },
+                            y: {
+                                ticks: { color: textColor, font: { size: 7 } },
+                                grid: { color: gridColor }
+                            }
                         }
                     }
                 };
+
                 expenseChart = new Chart(ctx2, expenseConfig);
-            } catch (error) { console.error('Expense chart error:', error); }
+                console.log('✅ Expense chart updated successfully');
+
+            } catch (error) {
+                console.error('Chart update error:', error);
+            }
         }
 
+        // ============================================================
+        // CHANGE CHART TYPE
+        // ============================================================
         function changeChartType(type) {
             const premiumTypes = ['pie', 'doughnut', 'radar'];
             if (premiumTypes.includes(type) && !isPremium) {
@@ -4871,9 +5012,13 @@
                 return;
             }
             chartType = type;
+            
+            // Update active button
             document.querySelectorAll('#chartControls button').forEach(b => b.classList.remove('active'));
             const activeBtn = document.querySelector(`#chartControls button[data-type="${type}"]`);
             if (activeBtn) activeBtn.classList.add('active');
+            
+            // Update the chart
             updateCharts();
             speakText(type + ' chart selected');
         }
@@ -4898,11 +5043,9 @@
 
                 const expiryDisplay = item.expiry ? `<div style="font-size:0.4rem; color:rgba(232,224,212,0.3);">Exp: ${item.expiry}</div>` :
                     '';
-                const imageHtml = item.image ? `<img src="${item.image}" alt="${item.name}" class="stock-image" />` :
-                    `<div class="stock-img">${item.emoji}</div>`;
 
                 return `<div class="stock-item">
-                    ${imageHtml}
+                    <div class="stock-img">${item.emoji}</div>
                     <div class="stock-info">
                         <div class="stock-name">${item.name}</div>
                         <div class="stock-price">R${item.price.toFixed(2)}</div>
@@ -4936,7 +5079,6 @@
                 ).join('') || '<tr><td colspan="7" style="text-align:center;color:rgba(232,224,212,0.25);">No items</td></tr>';
             }
 
-            // Update expiration alerts
             renderExpirationAlerts();
         }
 
@@ -4990,7 +5132,6 @@
             const price = parseFloat(document.getElementById('itemSell').value);
             const qty = parseInt(document.getElementById('itemQty').value) || 0;
             const category = document.getElementById('itemCategory').value.trim() || 'General';
-            const image = document.getElementById('itemImage').value.trim() || '';
 
             if (!name || isNaN(cost) || isNaN(price)) {
                 const msg = 'Please fill in all fields';
@@ -5005,7 +5146,6 @@
             else if (qty <= 25) status = 'Good';
             else status = 'Excellent';
 
-            // Set expiry date to 3 months from now by default
             const defaultExpiry = new Date();
             defaultExpiry.setMonth(defaultExpiry.getMonth() + 3);
             const expiryDate = defaultExpiry.toISOString().slice(0, 10);
@@ -5019,8 +5159,7 @@
                 price,
                 qty,
                 status,
-                expiry: expiryDate,
-                image: image
+                expiry: expiryDate
             });
 
             document.getElementById('itemName').value = '';
@@ -5028,133 +5167,12 @@
             document.getElementById('itemSell').value = '';
             document.getElementById('itemQty').value = '';
             document.getElementById('itemCategory').value = '';
-            document.getElementById('itemImage').value = '';
             updateStock();
             updateDashboard();
             speakText('Added ' + name + ' to stock');
             loyaltyPoints += 2;
             updateLoyaltyDisplay();
             triggerConfetti();
-        }
-
-        // ============================================================
-        // NEW: SUPPLIER MANAGEMENT
-        // ============================================================
-        function addSupplier() {
-            const name = document.getElementById('supplierName').value.trim();
-            const contact = document.getElementById('supplierContact').value.trim();
-            const product = document.getElementById('supplierProduct').value.trim();
-            const leadTime = document.getElementById('supplierLeadTime').value.trim();
-
-            if (!name) {
-                speakText('Please enter supplier name');
-                alert('⚠️ Please enter supplier name');
-                return;
-            }
-
-            suppliers.push({
-                id: 'sup' + Date.now(),
-                name: name,
-                contact: contact || 'N/A',
-                product: product || 'Various',
-                leadTime: leadTime || '3-5 days',
-                added: new Date().toISOString()
-            });
-
-            document.getElementById('supplierName').value = '';
-            document.getElementById('supplierContact').value = '';
-            document.getElementById('supplierProduct').value = '';
-            document.getElementById('supplierLeadTime').value = '';
-
-            renderSuppliers();
-            speakText('Added supplier: ' + name);
-            loyaltyPoints += 3;
-            updateLoyaltyDisplay();
-            triggerConfetti();
-        }
-
-        function renderSuppliers() {
-            const grid = document.getElementById('supplierGrid');
-            if (!grid) return;
-
-            if (suppliers.length === 0) {
-                grid.innerHTML = '<div style="font-size:0.55rem; color:rgba(232,224,212,0.3); text-align:center; padding:8px; grid-column:1/-1;">No suppliers added yet</div>';
-                return;
-            }
-
-            grid.innerHTML = suppliers.map(sup => `
-                <div class="supplier-card">
-                    <div class="supplier-name">🏢 ${sup.name}</div>
-                    <div class="supplier-detail">📞 ${sup.contact}</div>
-                    <div class="supplier-detail">📦 ${sup.product}</div>
-                    <div class="supplier-detail">⏱️ ${sup.leadTime}</div>
-                    <span class="supplier-badge">✅ Active</span>
-                </div>
-            `).join('');
-        }
-
-        // ============================================================
-        // NEW: RECIPE MANAGEMENT
-        // ============================================================
-        function addRecipe() {
-            const name = document.getElementById('recipeName').value.trim();
-            const ingredients = document.getElementById('recipeIngredients').value.trim();
-            const yieldCount = parseInt(document.getElementById('recipeYield').value) || 1;
-
-            if (!name || !ingredients) {
-                speakText('Please enter recipe name and ingredients');
-                alert('⚠️ Please enter recipe name and ingredients');
-                return;
-            }
-
-            // Calculate estimated cost based on ingredients
-            const ingredientList = ingredients.split(',').map(i => i.trim());
-            let estimatedCost = 0;
-            ingredientList.forEach(ing => {
-                const parts = ing.split(' ');
-                const priceMatch = ing.match(/\d+\.?\d*/);
-                if (priceMatch) {
-                    estimatedCost += parseFloat(priceMatch[0]);
-                }
-            });
-
-            recipes.push({
-                id: 'rec' + Date.now(),
-                name: name,
-                ingredients: ingredients,
-                yield: yieldCount,
-                estimatedCost: estimatedCost,
-                created: new Date().toISOString()
-            });
-
-            document.getElementById('recipeName').value = '';
-            document.getElementById('recipeIngredients').value = '';
-            document.getElementById('recipeYield').value = '1';
-
-            renderRecipes();
-            speakText('Added recipe: ' + name);
-            loyaltyPoints += 3;
-            updateLoyaltyDisplay();
-            triggerConfetti();
-        }
-
-        function renderRecipes() {
-            const container = document.getElementById('recipeList');
-            if (!container) return;
-
-            if (recipes.length === 0) {
-                container.innerHTML = '<div style="font-size:0.55rem; color:rgba(232,224,212,0.3); text-align:center; padding:8px;">No recipes added</div>';
-                return;
-            }
-
-            container.innerHTML = recipes.map(rec => `
-                <div class="recipe-item">
-                    <div class="recipe-name">🍳 ${rec.name}</div>
-                    <div class="recipe-cost">💰 R${rec.estimatedCost.toFixed(2)} per serving</div>
-                    <div class="recipe-ingredients">📝 ${rec.ingredients}</div>
-                    <div style="font-size:0.45rem; color:rgba(232,224,212,0.25);">Yield: ${rec.yield} servings</div>
-                </div>
-            `).join('');
         }
 
         // ============================================================
@@ -5173,7 +5191,7 @@
                 `<div style="background:rgba(10,14,26,0.2); border-radius:8px; padding:8px 12px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; border-left:3px solid #FFD700;">
                     <div>
                         <div style="font-size:0.7rem; font-weight:600;">${order.customer || 'Walk-in'}</div>
-                        <div style="font-size:0.5rem; color:rgba(232,224,212,0.2);">${order.items} | 💳 ${order.paymentMethod || 'Cash'}</div>
+                        <div style="font-size:0.5rem; color:rgba(232,224,212,0.2);">${order.items}</div>
                     </div>
                     <div style="text-align:right;">
                         <div style="font-size:0.7rem; color:#FFD700; font-weight:600;">R${order.total.toFixed(2)}</div>
@@ -5188,76 +5206,25 @@
             const customer = document.getElementById('customerName').value.trim() || 'Customer';
             const items = document.getElementById('orderItems').value.trim();
             const total = parseFloat(document.getElementById('orderTotal').value);
-            const paymentMethod = document.getElementById('paymentMethod').value;
-
             if (!items || isNaN(total) || total <= 0) {
                 speakText('Please enter items and total amount');
                 alert('⚠️ Please enter items and total amount');
                 return;
             }
-
-            const orderId = 'ORD-' + Date.now().toString().slice(-6);
-            businessData.orders.push({ 
-                id: orderId,
-                customer, 
-                items, 
-                total, 
-                status: 'pending',
-                paymentMethod: paymentMethod,
-                createdAt: new Date().toISOString()
-            });
-
-            // Add to sales history
-            salesHistoryEnhanced.push({
-                orderId: orderId,
-                customer: customer,
-                total: total,
-                paymentMethod: paymentMethod,
-                date: new Date().toISOString()
-            });
-
+            businessData.orders.push({ id: 'ORD' + Date.now().toString().slice(-6), customer, items, total, status: 'pending' });
+            businessData.totalOrders = businessData.orders.length;
+            businessData.sales += total;
+            businessData.profit = calculateProfit();
+            businessData.avgOrder = calculateAvgOrder();
+            
             document.getElementById('customerName').value = '';
             document.getElementById('orderItems').value = '';
             document.getElementById('orderTotal').value = '';
-
             updateOrders();
             updateDashboard();
             speakText('Order created for ' + customer);
             loyaltyPoints += 3;
             updateLoyaltyDisplay();
-            triggerConfetti();
-        }
-
-        // ============================================================
-        // NEW: RECEIPT GENERATION
-        // ============================================================
-        function generateReceipt() {
-            const orderId = document.getElementById('receiptOrderId').value.trim();
-            const order = businessData.orders.find(o => o.id === orderId || o.id === 'ORD-' + orderId);
-
-            if (!order) {
-                speakText('Order not found');
-                alert('⚠️ Order not found. Please enter a valid Order ID (e.g., ORD-123456)');
-                return;
-            }
-
-            const receiptDiv = document.getElementById('receiptDisplay');
-            receiptDiv.style.display = 'block';
-            receiptDiv.innerHTML = `
-                <div style="text-align:center; border-bottom:1px dashed rgba(255,215,0,0.06); padding-bottom:6px; margin-bottom:6px;">
-                    <div style="font-weight:700; font-size:0.8rem;">🧾 CAFECASH RECEIPT</div>
-                    <div style="font-size:0.5rem; color:rgba(232,224,212,0.3);">${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
-                </div>
-                <div class="receipt-line"><strong>Order ID:</strong> ${order.id}</div>
-                <div class="receipt-line"><strong>Customer:</strong> ${order.customer}</div>
-                <div class="receipt-line"><strong>Items:</strong> ${order.items}</div>
-                <div class="receipt-line"><strong>Payment:</strong> ${order.paymentMethod || 'Cash'}</div>
-                <div class="receipt-line" style="border-bottom:1px dashed rgba(255,215,0,0.06); padding-bottom:4px; margin-bottom:4px;"></div>
-                <div class="receipt-line receipt-total">Total: R${order.total.toFixed(2)}</div>
-                <div style="text-align:center; font-size:0.45rem; color:rgba(232,224,212,0.2); margin-top:6px;">Thank you for your business!</div>
-            `;
-
-            speakText('Receipt generated for order ' + order.id);
             triggerConfetti();
         }
 
@@ -5269,14 +5236,12 @@
             if (!grid) return;
             grid.innerHTML = businessData.customersList.map(customer => {
                 const initial = customer.name.charAt(0);
-                const loyaltyPts = loyaltyCustomers.find(c => c.name === customer.name)?.points || 0;
                 return `<div style="background:rgba(10,14,26,0.2); border-radius:8px; padding:8px 10px; display:flex; align-items:center; gap:8px; border:1px solid rgba(255,215,0,0.02);">
                     <div style="width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #FFD700, #1E3A8A); display:flex; align-items:center; justify-content:center; font-size:0.85rem; color:#0a0e1a; font-weight:700;">${initial}</div>
                     <div style="flex:1;">
                         <div style="font-size:0.65rem; font-weight:600;">${customer.name}</div>
                         <div style="font-size:0.45rem; color:rgba(232,224,212,0.35);">${customer.email || 'No email'} • ${customer.phone || 'No phone'}</div>
                     </div>
-                    <div style="font-size:0.4rem; padding:2px 8px; border-radius:40px; background:rgba(255,215,0,0.04); color:#FFD700;">⭐ ${loyaltyPts} pts</div>
                     <div style="font-size:0.4rem; padding:2px 8px; border-radius:40px; background:rgba(52,199,89,0.04); color:#34C759;">✅ Active</div>
                 </div>`;
             }).join('');
@@ -5305,48 +5270,6 @@
             loyaltyPoints += 2;
             updateLoyaltyDisplay();
             triggerConfetti();
-        }
-
-        // ============================================================
-        // NEW: LOYALTY PROGRAM
-        // ============================================================
-        function addLoyaltyPoints() {
-            const name = document.getElementById('loyaltyCustomer').value.trim();
-            const points = parseInt(document.getElementById('loyaltyPoints').value) || 0;
-
-            if (!name || points <= 0) {
-                speakText('Please enter customer name and valid points');
-                alert('⚠️ Please enter customer name and valid points');
-                return;
-            }
-
-            const existing = loyaltyCustomers.find(c => c.name === name);
-            if (existing) {
-                existing.points += points;
-            } else {
-                loyaltyCustomers.push({ name: name, points: points, awarded: new Date().toISOString() });
-            }
-
-            document.getElementById('loyaltyCustomer').value = '';
-            document.getElementById('loyaltyPoints').value = '';
-
-            renderLoyaltyCustomers();
-            speakText('Awarded ' + points + ' loyalty points to ' + name);
-            triggerConfetti();
-        }
-
-        function renderLoyaltyCustomers() {
-            const container = document.getElementById('loyaltyCustomerList');
-            if (!container) return;
-
-            if (loyaltyCustomers.length === 0) {
-                container.innerHTML = 'No loyalty customers yet';
-                return;
-            }
-
-            container.innerHTML = loyaltyCustomers.map(c => 
-                `${c.name}: ⭐ ${c.points} pts`
-            ).join(' • ');
         }
 
         // ============================================================
@@ -5391,23 +5314,6 @@
         }
 
         // ============================================================
-        // NEW: TIME TRACKING
-        // ============================================================
-        function renderTimeTracking() {
-            const container = document.getElementById('timeTrackingList');
-            if (!container) return;
-
-            if (timeTracking.length === 0) {
-                container.innerHTML = 'No time entries recorded';
-                return;
-            }
-
-            container.innerHTML = timeTracking.slice(-5).reverse().map(t => 
-                `${t.name} - ${t.action} at ${new Date(t.timestamp).toLocaleTimeString()}`
-            ).join('<br>');
-        }
-
-        // ============================================================
         // EXPENSES
         // ============================================================
         function saveExpenses() {
@@ -5417,9 +5323,11 @@
             businessData.expenses.marketing = parseFloat(document.getElementById('expMarketing').value) || 0;
             businessData.expenses.transport = parseFloat(document.getElementById('expTransport').value) || 0;
             businessData.expenses.supplies = parseFloat(document.getElementById('expSupplies').value) || 0;
-            const total = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
             
-            // Update the manual expenses field
+            const total = Object.values(businessData.expenses).reduce((a, b) => a + b, 0);
+            businessData.profit = calculateProfit();
+            businessData.avgOrder = calculateAvgOrder();
+            
             document.getElementById('manualExpenses').value = total;
             
             speakText('Expenses saved. Total: R' + total.toFixed(2));
@@ -5447,23 +5355,16 @@
             csv += 'Tier: ' + userTier + '\n';
             csv += 'Sales: R' + businessData.sales.toFixed(2) + '\n';
             csv += 'Profit: R' + businessData.profit.toFixed(2) + '\n';
+            csv += 'Profit Margin: ' + calculateProfitMargin().toFixed(1) + '%\n';
             csv += 'Orders: ' + businessData.totalOrders + '\n';
+            csv += 'Avg Order: R' + businessData.avgOrder.toFixed(2) + '\n';
             csv += 'Customers: ' + businessData.customersList.length + '\n';
             csv += 'Staff: ' + businessData.staff.length + '\n';
-            csv += 'Avg Order: R' + businessData.avgOrder.toFixed(2) + '\n';
             csv += 'Loyalty Points: ' + Math.round(loyaltyPoints) + '\n\n';
             csv += '--- Stock Items ---\n';
             businessData.stock.forEach(item => {
                 csv += item.name + ',' + item.qty + ',' + item.price + ',' + item.status + ',' + (item.expiry ||
                     'N/A') + '\n';
-            });
-            csv += '\n--- Suppliers ---\n';
-            suppliers.forEach(sup => {
-                csv += sup.name + ',' + sup.contact + ',' + sup.product + ',' + sup.leadTime + '\n';
-            });
-            csv += '\n--- Recipes ---\n';
-            recipes.forEach(rec => {
-                csv += rec.name + ',' + rec.ingredients + ',' + rec.estimatedCost + ',' + rec.yield + '\n';
             });
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
@@ -5845,7 +5746,7 @@
             const lower = message.toLowerCase();
 
             if (lower.includes('profit') || lower.includes('revenue') || lower.includes('money')) {
-                const margin = ((businessData.profit / businessData.sales) * 100);
+                const margin = calculateProfitMargin();
                 return `💰 Revenue: R${businessData.sales.toFixed(0)} | Profit: R${businessData.profit.toFixed(0)} | Margin: ${margin.toFixed(1)}%\n${margin > 30 ? '🎉 Excellent profit margin!' : '📊 Consider increasing prices or reducing costs.'}`;
             }
             if (lower.includes('stock') || lower.includes('inventory')) {
@@ -5860,7 +5761,7 @@
                 return `📊 Sales are ${trend}.\n📋 ${businessData.totalOrders} orders today.\n💰 Revenue: R${businessData.sales.toFixed(0)}`;
             }
             if (lower.includes('target') || lower.includes('goal')) {
-                const progress = (businessData.monthlyAchieved / businessData.monthlyTarget) * 100;
+                const progress = businessData.monthlyTarget > 0 ? (businessData.monthlyAchieved / businessData.monthlyTarget) * 100 : 0;
                 const emoji = progress > 75 ? '🎉' : progress > 50 ? '💪' : '📈';
                 return `🎯 Target progress: ${progress.toFixed(0)}%\n${emoji} ${progress > 75 ? 'Almost there!' : progress > 50 ? 'Keep going!' : 'Time to boost sales!'}`;
             }
@@ -5890,25 +5791,13 @@
                 }
                 return `⏰ **Expiration Alerts:**\n${alerts.map(a => `• ${a.message}`).join('\n')}`;
             }
-            if (lower.includes('supplier') || lower.includes('suppliers')) {
-                if (suppliers.length === 0) {
-                    return `🏢 No suppliers added yet. Add your first supplier to track purchases.`;
-                }
-                return `🏢 Suppliers (${suppliers.length}):\n${suppliers.map(s => `• ${s.name}: ${s.product} (${s.leadTime})`).join('\n')}`;
-            }
-            if (lower.includes('recipe') || lower.includes('menu') || lower.includes('costing')) {
-                if (recipes.length === 0) {
-                    return `📋 No recipes added yet. Add recipes to track menu costing.`;
-                }
-                return `📋 Recipes (${recipes.length}):\n${recipes.map(r => `• ${r.name}: R${r.estimatedCost.toFixed(2)} per serving`).join('\n')}`;
-            }
             const responses = [
-                `📊 Revenue: R${businessData.sales.toFixed(0)} | Profit: R${businessData.profit.toFixed(0)} | Margin: ${((businessData.profit/businessData.sales)*100).toFixed(1)}%`,
+                `📊 Revenue: R${businessData.sales.toFixed(0)} | Profit: R${businessData.profit.toFixed(0)} | Margin: ${calculateProfitMargin().toFixed(1)}%`,
                 `📦 ${businessData.stock.filter(i => i.qty < 10).length} items need restocking.`,
                 `💡 Tip: Your business is performing well! Keep it up!`,
-                `💰 Profit margin: ${((businessData.profit/businessData.sales)*100).toFixed(1)}% ${((businessData.profit/businessData.sales)*100) > 30 ? '🎉 Excellent!' : '📊 Room for improvement'}`,
+                `💰 Profit margin: ${calculateProfitMargin().toFixed(1)}% ${calculateProfitMargin() > 30 ? '🎉 Excellent!' : '📊 Room for improvement'}`,
                 `📈 ${businessData.totalOrders} orders today. ${businessData.sales > 3000 ? '📈 Sales increasing!' : '📊 Steady sales'}`,
-                `🎯 ${((businessData.monthlyAchieved / businessData.monthlyTarget) * 100).toFixed(0)}% of monthly target achieved.`,
+                `🎯 ${businessData.monthlyTarget > 0 ? ((businessData.monthlyAchieved / businessData.monthlyTarget) * 100).toFixed(0) : 0}% of monthly target achieved.`,
                 `⭐ Your business level: ${userLevel} | Grade: ${userGrade}`
             ];
             return responses[Math.floor(Math.random() * responses.length)];
@@ -6361,11 +6250,14 @@
         // ============================================================
         function initApp() {
             console.log('🏛️ CafeCash JGA 2026 System initializing...');
-            console.log('📌 REAL MANUAL INPUT MODE:');
-            console.log('  ✅ All charts reflect YOUR entered numbers');
-            console.log('  ✅ No random data - you control everything');
-            console.log('  ✅ Enter numbers and click UPDATE to see changes');
+            console.log('📌 FIXED CALCULATIONS & CHART.JS:');
+            console.log('  ✅ Profit = Sales - Total Expenses');
+            console.log('  ✅ Avg Order = Sales / Total Orders');
+            console.log('  ✅ Profit Margin = (Profit / Sales) × 100%');
+            console.log('  ✅ Stock Turnover = Sales / Total Stock Value');
+            console.log('  ✅ Chart.js properly integrated and rendering');
 
+            // Check if Chart.js is loaded
             if (typeof Chart === 'undefined') {
                 console.warn('⏳ Chart.js not loaded yet, waiting...');
                 setTimeout(initApp, 500);
@@ -6431,7 +6323,11 @@
                 updateOrders();
                 updateCustomers();
                 updateStaff();
-                setTimeout(() => { updateCharts(); }, 300);
+                // Initial chart render with delay to ensure DOM is ready
+                setTimeout(() => { 
+                    updateCharts(); 
+                    console.log('✅ Initial charts rendered');
+                }, 500);
                 startLiveUpdates();
                 loadInvoices();
                 loadTasks();
@@ -6489,7 +6385,10 @@
                 updateOrders();
                 updateCustomers();
                 updateStaff();
-                setTimeout(() => { updateCharts(); }, 300);
+                setTimeout(() => { 
+                    updateCharts(); 
+                    console.log('✅ Initial charts rendered');
+                }, 500);
                 startLiveUpdates();
                 loadInvoices();
                 loadTasks();
@@ -6512,11 +6411,11 @@
                 };
             }
 
-            console.log('✅ CafeCash REAL MANUAL INPUT System ready!');
+            console.log('✅ CafeCash FIXED CALCULATIONS & CHART.JS System ready!');
             console.log('📊 Enter your numbers and click UPDATE to see charts change');
         }
 
-        console.log('🏛️ Starting CafeCash REAL MANUAL INPUT System...');
+        console.log('🏛️ Starting CafeCash FIXED CALCULATIONS & CHART.JS System...');
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
@@ -6525,4 +6424,3 @@
     </script>
 </body>
 </html>
-
