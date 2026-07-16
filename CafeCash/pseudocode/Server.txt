@@ -1,0 +1,148 @@
+   Server
+
+begin 
+
+    String: userName, password
+ // Input
+    display "Username"
+    enter userName
+
+    display "Password"
+    enter password
+
+    begin
+
+        // Check whether the username exists
+        search for userName in users
+
+        // Validate password
+        if userName exists THEN
+
+            if password matches stored password THEN
+                // Allow access
+                display "Login Successful"
+                return user details
+            else
+                // Wrong password
+                display "Invalid Password"
+            
+
+        else
+            // Username not found
+            display "User Not Found"
+       
+    end
+
+
+
+    begin
+        real: revenue ,profit, stockValue,time, expenses
+        int: totalOrders,quantity
+
+        //===Processing====///
+
+        // Generate random business changes
+        revenue = revenue + randomChange
+        profit = profit + (randomChange × 0.4)
+
+        // Update stock value
+        stockValue = stockValue + randomStockChange
+
+        // Increase total orders
+        totalOrders = totalOrders + randomOrders
+
+        // Update product quantities
+        FOR each selected product
+
+            quantity = quantity + randomQuantityChange
+
+            // Determine stock status
+            IF quantity <= 3 THEN
+                status = "URGENT"
+
+    else quantity <= 5 THEN
+                status = "CRITICAL"
+
+            if quantity <= 15 THEN
+                status = "LOW"
+
+            ELSE
+                status = "GOOD"
+
+            
+
+        
+
+        // Save values for graphs
+        save revenue history
+        save profit history
+        save expense history
+
+    end
+
+
+   
+    begin
+        //===output====
+
+        // Retrieve business information
+        display ""+ revenue
+        display ""+profit
+        display ""+ expenses
+        display ""+stockValue
+        display ""+ totalOrders
+
+        
+
+    end
+
+
+
+    begin
+
+        //intialise
+        String: response
+        int: requestCount 
+        //input
+         display "Response"
+        enter response
+        //processing
+      requestCount = num.Length(response)
+        
+        requestCount = requestCount + 1
+
+       
+       //output
+
+        // Retrieve updated values
+        display ""+ revenue
+        display ""+profit
+       display ""+ expenses
+        display ""+stockValue
+        display ""+ totalOrders
+
+        // Send live data
+        display ""+response
+
+    end
+
+    begin
+        display
+
+
+        // Retrieve graph history
+        display "revenue history"+revenue
+       display "profit history"+profit
+        display "expense history"+expenses
+        display "time labels" + time
+
+        // Return graph data
+        display ""+response
+
+    end
+
+end
+
+
+
+   
